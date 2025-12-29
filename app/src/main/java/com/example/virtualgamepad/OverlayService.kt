@@ -1,3 +1,16 @@
+package com.example.virtualgamepad
+
+import android.app.Notification
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.app.Service
+import android.content.Intent
+import android.graphics.PixelFormat
+import android.os.Build
+import android.os.IBinder
+import android.view.Gravity
+import android.view.WindowManager
+
 class OverlayService : Service() {
 
     private lateinit var windowManager: WindowManager
@@ -49,6 +62,7 @@ class OverlayService : Service() {
             .setSmallIcon(android.R.drawable.ic_media_play)
             .build()
 
+        // ✅ THIS WAS MISSING
         startForeground(1, notification)
     }
 
