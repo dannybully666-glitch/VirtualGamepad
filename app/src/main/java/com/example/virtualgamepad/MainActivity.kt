@@ -14,17 +14,15 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val startBtn = findViewById<Button>(R.id.startOverlay)
-        val stopBtn = findViewById<Button>(R.id.stopOverlay)
-
-        startBtn.setOnClickListener {
+        findViewById<Button>(R.id.startOverlay).setOnClickListener {
 
             if (!Settings.canDrawOverlays(this)) {
-                val intent = Intent(
-                    Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
-                    Uri.parse("package:$packageName")
+                startActivity(
+                    Intent(
+                        Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
+                        Uri.parse("package:$packageName")
+                    )
                 )
-                startActivity(intent)
                 return@setOnClickListener
             }
 
@@ -37,7 +35,7 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        stopBtn.setOnClickListener {
+        findViewById<Button>(R.id.stopOverlay).setOnClickListener {
             stopService(Intent(this, OverlayService::class.java))
         }
     }
