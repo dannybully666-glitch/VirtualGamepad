@@ -16,7 +16,7 @@ class OverlayService : Service() {
     override fun onCreate() {
         super.onCreate()
 
-        startAsForeground() // MUST be first
+        startAsForeground()
 
         windowManager = getSystemService(WINDOW_SERVICE) as WindowManager
         joystickView = JoystickView(this)
@@ -28,7 +28,11 @@ class OverlayService : Service() {
                 WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY
             else
                 WindowManager.LayoutParams.TYPE_PHONE,
-            WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
+
+            // 🔥 THIS FIXES THE CRASH
+            WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or
+                    WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL,
+
             PixelFormat.TRANSLUCENT
         )
 
@@ -45,7 +49,7 @@ class OverlayService : Service() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val channel = NotificationChannel(
                 channelId,
-                "Overlay",
+                "Virtual Gamepad Overlay",
                 NotificationManager.IMPORTANCE_MIN
             )
             getSystemService(NotificationManager::class.java)
@@ -53,7 +57,7 @@ class OverlayService : Service() {
         }
 
         val notification = Notification.Builder(this, channelId)
-            .setContentTitle("Virtual Gamepad")
+            .setContentTitle("VirtualGamepad")
             .setContentText("Overlay running")
             .setSmallIcon(android.R.drawable.ic_media_play)
             .build()
