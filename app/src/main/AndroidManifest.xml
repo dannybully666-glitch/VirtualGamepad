@@ -1,22 +1,22 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.example.virtualgamepad">
 
-    <uses-feature android:name="android.hardware.gamepad" />
-    <uses-feature android:name="android.software.virtual_device" />
+    <uses-feature
+        android:name="android.hardware.gamepad"
+        android:required="false" />
 
     <application
-        android:label="Virtual Gamepad"
-        android:hasGamepadSupport="true"
-        android:theme="@android:style/Theme.DeviceDefault">
-
+        android:label="VirtualGamepad"
+        android:icon="@mipmap/ic_launcher">
+        
         <activity
             android:name=".MainActivity"
             android:exported="true">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
-                <category android:name="android.intent.category.LAUNCHER"/>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
 
     </application>
-
 </manifest>
