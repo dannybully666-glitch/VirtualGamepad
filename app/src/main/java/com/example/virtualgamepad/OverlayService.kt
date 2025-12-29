@@ -1,15 +1,17 @@
 package com.example.virtualgamepad
 
-import android.app.Notification
-import android.app.NotificationChannel
-import android.app.NotificationManager
-import android.app.Service
+import android.app.*
 import android.content.Intent
 import android.graphics.PixelFormat
 import android.os.Build
 import android.os.IBinder
+import android.util.Log
 import android.view.Gravity
 import android.view.WindowManager
+import android.view.View
+import android.app.Notification
+import android.app.NotificationChannel
+import android.app.NotificationManager
 
 class OverlayService : Service() {
 
@@ -19,28 +21,32 @@ class OverlayService : Service() {
     override fun onCreate() {
         super.onCreate()
 
-        // ✅ MUST BE FIRST
         makeForeground()
 
         windowManager = getSystemService(WINDOW_SERVICE) as WindowManager
         joystickView = JoystickView(this)
 
-        val layoutParams = WindowManager.LayoutParams(
+        // 🔴 DEBUG: force visible background
+        joystickView.setBackgroundColor(0x55FF0000)
+
+        val params = WindowManager.LayoutParams(
             500,
             500,
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
                 WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY
             else
                 WindowManager.LayoutParams.TYPE_PHONE,
-            WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
+            WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or
+                    WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN,
             PixelFormat.TRANSLUCENT
         )
 
-        layoutParams.gravity = Gravity.BOTTOM or Gravity.START
-        layoutParams.x = 50
-        layoutParams.y = 50
+        params.gravity = Gravity.CENTER
+        params.x = 0
+        params.y = 0
 
-        windowManager.addView(joystickView, layoutParams)
+        Log.d("OverlayService", "Adding joystick overlay")
+        windowManager.addView(joystickView, params)
     }
 
     private fun makeForeground() {
@@ -57,12 +63,11 @@ class OverlayService : Service() {
         }
 
         val notification = Notification.Builder(this, channelId)
-            .setContentTitle("Virtual Gamepad")
+            .setContentTitle("VirtualGamepad")
             .setContentText("Overlay running")
             .setSmallIcon(android.R.drawable.ic_media_play)
             .build()
 
-        // ✅ THIS WAS MISSING
         startForeground(1, notification)
     }
 
