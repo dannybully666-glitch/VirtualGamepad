@@ -1,13 +1,3 @@
-package com.example.virtualgamepad
-
-import android.app.*
-import android.content.Intent
-import android.graphics.PixelFormat
-import android.os.Build
-import android.os.IBinder
-import android.view.Gravity
-import android.view.WindowManager
-
 class OverlayService : Service() {
 
     private lateinit var windowManager: WindowManager
@@ -15,6 +5,9 @@ class OverlayService : Service() {
 
     override fun onCreate() {
         super.onCreate()
+
+        // ✅ MUST BE FIRST
+        makeForeground()
 
         windowManager = getSystemService(WINDOW_SERVICE) as WindowManager
         joystickView = JoystickView(this)
@@ -35,10 +28,9 @@ class OverlayService : Service() {
         layoutParams.y = 50
 
         windowManager.addView(joystickView, layoutParams)
-        startForegroundService()
     }
 
-    private fun startForegroundService() {
+    private fun makeForeground() {
         val channelId = "overlay_channel"
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -47,11 +39,12 @@ class OverlayService : Service() {
                 "Virtual Gamepad Overlay",
                 NotificationManager.IMPORTANCE_LOW
             )
-            getSystemService(NotificationManager::class.java).createNotificationChannel(channel)
+            getSystemService(NotificationManager::class.java)
+                .createNotificationChannel(channel)
         }
 
         val notification = Notification.Builder(this, channelId)
-            .setContentTitle("VirtualGamepad")
+            .setContentTitle("Virtual Gamepad")
             .setContentText("Overlay running")
             .setSmallIcon(android.R.drawable.ic_media_play)
             .build()
