@@ -44,22 +44,35 @@ class JoystickView(context: Context) : View(context) {
     }
 
     private fun sendAxis(x: Float, y: Float) {
-        val now = System.nanoTime()
+    val now = System.currentTimeMillis()
 
-        val event = MotionEvent.obtain(
-            now,
-            now,
-            MotionEvent.ACTION_MOVE,
-            0f,
-            0f,
-            0
-        )
-
-        event.source = InputDevice.SOURCE_JOYSTICK
-        event.setAxisValue(MotionEvent.AXIS_X, x)
-        event.setAxisValue(MotionEvent.AXIS_Y, y)
-
-        dispatchGenericMotionEvent(event)
-        event.recycle()
+    val properties = MotionEvent.PointerProperties().apply {
+        id = 0
+        toolType = MotionEvent.TOOL_TYPE_FINGER
     }
+
+    val coords = MotionEvent.PointerCoords().apply {
+        setAxisValue(MotionEvent.AXIS_X, x)
+        setAxisValue(MotionEvent.AXIS_Y, y)
+    }
+
+    val event = MotionEvent.obtain(
+        now,
+        now,
+        MotionEvent.ACTION_MOVE,
+        1,
+        arrayOf(properties),
+        arrayOf(coords),
+        0,
+        0,
+        1f,
+        1f,
+        0,
+        0,
+        InputDevice.SOURCE_JOYSTICK,
+        0
+    )
+
+    dispatchGenericMotionEvent(event)
+    event.recycle()
 }
