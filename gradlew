@@ -1,2 +1,7 @@
 #!/usr/bin/env sh
-./gradle/wrapper/gradle-wrapper.jar "$@"
+
+DIR="$(cd "$(dirname "$0")" && pwd)"
+
+JAVA_CMD="java"
+
+exec "$JAVA_CMD" -jar "$DIR/gradle/wrapper/gradle-wrapper.jar" "$@"
