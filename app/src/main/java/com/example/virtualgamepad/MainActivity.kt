@@ -7,7 +7,6 @@ class MainActivity : Activity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        val gamepad = VirtualGamepad(this)
+        // No VirtualGamepad reference yet
     }
 }
