@@ -5,13 +5,8 @@ import android.content.Intent
 import android.graphics.PixelFormat
 import android.os.Build
 import android.os.IBinder
-import android.util.Log
 import android.view.Gravity
 import android.view.WindowManager
-import android.view.View
-import android.app.Notification
-import android.app.NotificationChannel
-import android.app.NotificationManager
 
 class OverlayService : Service() {
 
@@ -21,49 +16,44 @@ class OverlayService : Service() {
     override fun onCreate() {
         super.onCreate()
 
-        makeForeground()
+        startAsForeground() // MUST be first
 
         windowManager = getSystemService(WINDOW_SERVICE) as WindowManager
         joystickView = JoystickView(this)
 
-        // 🔴 DEBUG: force visible background
-        joystickView.setBackgroundColor(0x55FF0000)
-
         val params = WindowManager.LayoutParams(
-            500,
-            500,
+            400,
+            400,
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
                 WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY
             else
                 WindowManager.LayoutParams.TYPE_PHONE,
-            WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or
-                    WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN,
+            WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
             PixelFormat.TRANSLUCENT
         )
 
-        params.gravity = Gravity.CENTER
-        params.x = 0
-        params.y = 0
+        params.gravity = Gravity.BOTTOM or Gravity.START
+        params.x = 50
+        params.y = 50
 
-        Log.d("OverlayService", "Adding joystick overlay")
         windowManager.addView(joystickView, params)
     }
 
-    private fun makeForeground() {
+    private fun startAsForeground() {
         val channelId = "overlay_channel"
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val channel = NotificationChannel(
                 channelId,
-                "Virtual Gamepad Overlay",
-                NotificationManager.IMPORTANCE_LOW
+                "Overlay",
+                NotificationManager.IMPORTANCE_MIN
             )
             getSystemService(NotificationManager::class.java)
                 .createNotificationChannel(channel)
         }
 
         val notification = Notification.Builder(this, channelId)
-            .setContentTitle("VirtualGamepad")
+            .setContentTitle("Virtual Gamepad")
             .setContentText("Overlay running")
             .setSmallIcon(android.R.drawable.ic_media_play)
             .build()
@@ -73,7 +63,9 @@ class OverlayService : Service() {
 
     override fun onDestroy() {
         super.onDestroy()
-        windowManager.removeView(joystickView)
+        if (::windowManager.isInitialized) {
+            windowManager.removeView(joystickView)
+        }
     }
 
     override fun onBind(intent: Intent?): IBinder? = null
