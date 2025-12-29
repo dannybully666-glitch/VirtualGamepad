@@ -12,26 +12,38 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        // Request overlay permission
+        // Simple empty screen (prevents instant close)
+        setContentView(android.R.layout.simple_list_item_1)
+
         if (!Settings.canDrawOverlays(this)) {
-            val intent = Intent(
-                Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
-                Uri.parse("package:$packageName")
+            startActivity(
+                Intent(
+                    Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
+                    Uri.parse("package:$packageName")
+                )
             )
-            startActivity(intent)
-            finish()
             return
         }
 
-        // Start overlay service
-        val serviceIntent = Intent(this, OverlayService::class.java)
+        startOverlay()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (Settings.canDrawOverlays(this)) {
+            startOverlay()
+        }
+    }
+
+    private fun startOverlay() {
+        val intent = Intent(this, OverlayService::class.java)
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            startForegroundService(serviceIntent)
+            startForegroundService(intent)
         } else {
-            startService(serviceIntent)
+            startService(intent)
         }
 
-        finish()
+        // ❌ DO NOT finish yet
     }
 }
