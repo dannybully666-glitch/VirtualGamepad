@@ -7,6 +7,8 @@ class MainActivity : Activity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        // No VirtualGamepad reference yet
+
+        val joystick = JoystickView(this)
+        setContentView(joystick)
     }
 }
