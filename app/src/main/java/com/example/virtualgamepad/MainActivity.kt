@@ -10,19 +10,20 @@ import android.provider.Settings
 class MainActivity : Activity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+    super.onCreate(savedInstanceState)
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M &&
-            !Settings.canDrawOverlays(this)
-        ) {
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+        if (!Settings.canDrawOverlays(this)) {
             val intent = Intent(
                 Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
                 Uri.parse("package:$packageName")
             )
             startActivity(intent)
-        } else {
-            startService(Intent(this, OverlayService::class.java))
-            finish()
+            return   // ⬅️ IMPORTANT: don’t finish yet
         }
     }
-}
+
+    // Permission already granted
+    startService(Intent(this, OverlayService::class.java))
+    finish()
+    }
