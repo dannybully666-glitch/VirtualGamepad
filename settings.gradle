@@ -1,18 +1,24 @@
 pluginManagement {
     repositories {
         google()
-        mavenCentral()
         gradlePluginPortal()
+        maven {
+            url = uri("https://maven.pkg.jetbrains.space/kotlin/p/kotlin/dev")
+        }
+        mavenCentral()
     }
     plugins {
-        id "com.android.application" version "8.1.4"
-        id "org.jetbrains.kotlin.android" version "1.9.10"
+        id("com.android.application") version "8.1.4"
+        id("org.jetbrains.kotlin.android") version "1.9.10"
     }
 }
 
 dependencyResolutionManagement {
     repositories {
         google()
+        maven {
+            url = uri("https://maven.pkg.jetbrains.space/kotlin/p/kotlin/dev")
+        }
         mavenCentral()
     }
 }
