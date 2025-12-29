@@ -14,31 +14,31 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        findViewById<Button>(R.id.start).setOnClickListener {
+        val startBtn = findViewById<Button>(R.id.startOverlay)
+        val stopBtn = findViewById<Button>(R.id.stopOverlay)
+
+        startBtn.setOnClickListener {
+
             if (!Settings.canDrawOverlays(this)) {
-                startActivity(
-                    Intent(
-                        Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
-                        Uri.parse("package:$packageName")
-                    )
+                val intent = Intent(
+                    Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
+                    Uri.parse("package:$packageName")
                 )
+                startActivity(intent)
                 return@setOnClickListener
             }
 
-            startOverlay()
+            val intent = Intent(this, OverlayService::class.java)
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                startForegroundService(intent)
+            } else {
+                startService(intent)
+            }
         }
 
-        findViewById<Button>(R.id.stop).setOnClickListener {
+        stopBtn.setOnClickListener {
             stopService(Intent(this, OverlayService::class.java))
-        }
-    }
-
-    private fun startOverlay() {
-        val intent = Intent(this, OverlayService::class.java)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            startForegroundService(intent)
-        } else {
-            startService(intent)
         }
     }
 }
