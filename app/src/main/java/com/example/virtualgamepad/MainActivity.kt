@@ -5,32 +5,26 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
+import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 
 class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_main)
 
-        // Simple empty screen (prevents instant close)
-        setContentView(android.R.layout.simple_list_item_1)
-
-        if (!Settings.canDrawOverlays(this)) {
-            startActivity(
-                Intent(
-                    Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
-                    Uri.parse("package:$packageName")
+        findViewById<Button>(R.id.startOverlay).setOnClickListener {
+            if (!Settings.canDrawOverlays(this)) {
+                startActivity(
+                    Intent(
+                        Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
+                        Uri.parse("package:$packageName")
+                    )
                 )
-            )
-            return
-        }
+                return@setOnClickListener
+            }
 
-        startOverlay()
-    }
-
-    override fun onResume() {
-        super.onResume()
-        if (Settings.canDrawOverlays(this)) {
             startOverlay()
         }
     }
@@ -43,7 +37,5 @@ class MainActivity : AppCompatActivity() {
         } else {
             startService(intent)
         }
-
-        // ❌ DO NOT finish yet
     }
 }
