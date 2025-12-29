@@ -1,20 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
-    android:gravity="center"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:orientation="vertical">
 
     <Button
-        android:id="@+id/start"
-        android:text="Start Overlay"
+        android:id="@+id/startOverlay"
+        android:text="START OVERLAY"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
 
     <Button
-        android:id="@+id/stop"
-        android:text="Stop Overlay"
+        android:id="@+id/stopOverlay"
+        android:text="STOP OVERLAY"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"/>
+
 </LinearLayout>
